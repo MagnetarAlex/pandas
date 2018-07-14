@@ -4777,6 +4777,15 @@ Reading Tables
 :func:`~pandas.read_sql_table` will read a database table given the
 table name and optionally a subset of columns to read.
 
+Note that pandas infers column dtypes from query outputs, and not by looking up
+data types in the physical database schema.
+For example, assume ‘userid’ is an integer column in a table. Then, intuitively,
+“select userid …” will return integer-valued series, while “select cast(userid as text) …”
+will return object-valued (str) series.
+Accordingly, if the query output is empty, then all resulting columns will be returned
+as object-valued (since they are most general). If you foresee that your query will sometimes
+generate an empty result, you may want to explicitly typecast afterwards to ensure dtype integrity.
+
 .. note::
 
     In order to use :func:`~pandas.read_sql_table`, you **must** have the
